@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snap Dash | 出張撮影サービス</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #111; background: #fff; }
+a { text-decoration: none; color: inherit; }
+
+/* NAV */
+.nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; border-bottom: 1px solid #eee; background: #fff; position: sticky; top: 0; z-index: 100; }
+.nav-logo { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; cursor: pointer; }
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a { font-size: 14px; color: #555; cursor: pointer; }
+.nav-links a:hover, .nav-links a.active { color: #111; font-weight: 600; }
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: block; }
+
+/* HERO */
+.hero { background: #111; color: #fff; padding: 80px 40px; text-align: center; min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+.hero-badge { font-size: 12px; background: rgba(255,255,255,0.15); padding: 4px 14px; border-radius: 20px; display: inline-block; }
+.hero h1 { font-size: 42px; font-weight: 700; line-height: 1.2; }
+.hero p { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 480px; line-height: 1.7; }
+.hero-btns { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; justify-content: center; }
+.btn-primary { background: #fff; color: #111; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; }
+.btn-secondary { background: transparent; color: #fff; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; }
+
+/* SECTIONS */
+.section { padding: 64px 40px; }
+.section-dark { background: #111; color: #fff; }
+.section-gray { background: #f7f7f7; }
+.section-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.section-dark .section-label { color: rgba(255,255,255,0.45); }
+.section h2 { font-size: 28px; font-weight: 700; margin-bottom: 14px; }
+.section-dark h2 { color: #fff; }
+.section p { font-size: 15px; color: #666; line-height: 1.7; max-width: 560px; }
+.section-dark p { color: rgba(255,255,255,0.65); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; max-width: 900px; margin: 0 auto; }
+.img-box { background: #f0f0f0; border-radius: 12px; height: 260px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 48px; }
+.img-box-dark { background: rgba(255,255,255,0.08); border-radius: 12px; height: 260px; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+
+/* STEPS */
+.steps-wrap { max-width: 900px; margin: 40px auto 0; display: flex; flex-direction: column; gap: 0; }
+.step { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 32px 0; border-bottom: 1px solid #eee; }
+.step:nth-child(even) { direction: rtl; }
+.step:nth-child(even) > * { direction: ltr; }
+.step-left { display: flex; flex-direction: column; gap: 16px; }
+.step-header { display: flex; align-items: center; gap: 14px; }
+.step-num { width: 38px; height: 38px; border-radius: 50%; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.step h3 { font-size: 17px; font-weight: 600; }
+.step p { font-size: 14px; color: #666; line-height: 1.7; }
+
+/* PHONE MOCKUP */
+.phone-mockup { display: flex; justify-content: center; align-items: center; }
+.phone-frame { position: relative; width: 240px; background: #1a1a1a; border-radius: 40px; padding: 14px 10px; box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1) inset; }
+.phone-notch { width: 80px; height: 24px; background: #1a1a1a; border-radius: 0 0 16px 16px; margin: 0 auto 6px; position: relative; z-index: 2; }
+.phone-screen { border-radius: 28px; overflow: hidden; background: #f0f0f0; position: relative; cursor: pointer; }
+.phone-screen img { width: 100%; display: block; }
+.phone-screen-placeholder { width: 100%; height: 480px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #aaa; background: #f5f5f5; }
+.phone-screen-placeholder span { font-size: 40px; }
+.phone-screen-placeholder p { font-size: 12px; color: #bbb; }
+.phone-home-bar { width: 80px; height: 4px; background: rgba(255,255,255,0.4); border-radius: 4px; margin: 10px auto 0; }
+.step-img-input { display: none; }
+.upload-btn { margin-top: 8px; font-size: 11px; background: #111; color: #fff; border: none; padding: 5px 14px; border-radius: 20px; cursor: pointer; }
+
+/* NEWS */
+.news-list { border-top: 1px solid #eee; margin-top: 32px; max-width: 800px; margin-left: auto; margin-right: auto; }
+.news-item { display: flex; gap: 20px; padding: 18px 0; border-bottom: 1px solid #eee; align-items: flex-start; cursor: pointer; }
+.news-item:hover { background: #fafafa; margin: 0 -8px; padding: 18px 8px; }
+.news-meta { min-width: 120px; }
+.news-date { font-size: 12px; color: #999; display: block; margin-bottom: 5px; }
+.news-tag { font-size: 11px; background: #111; color: #fff; padding: 2px 8px; border-radius: 4px; }
+.news-title { font-size: 14px; font-weight: 500; line-height: 1.6; }
+.news-desc { font-size: 13px; color: #777; margin-top: 4px; line-height: 1.6; }
+
+/* APP DOWNLOAD */
+.app-section { background: #111; color: #fff; padding: 64px 40px; text-align: center; }
+.app-icon { width: 72px; height: 72px; background: #fff; border-radius: 16px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; }
+.app-section h2 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.app-section > p { color: rgba(255,255,255,0.6); font-size: 15px; margin: 0 auto 24px; }
+.app-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.app-btn { background: rgba(255,255,255,0.12); color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 14px; border: 1px solid rgba(255,255,255,0.25); cursor: pointer; }
+.coupon-note { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 16px; }
+
+/* LOGO MARQUEE */
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.logo-track { display: flex; gap: 0; width: max-content; animation: marquee 20s linear infinite; }
+.logo-track:hover { animation-play-state: paused; }
+.logo-item { padding: 0 20px; }
+.logo-placeholder { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 120px; font-size: 28px; cursor: pointer; transition: background 0.2s; }
+.logo-placeholder:hover { background: rgba(255,255,255,0.15); }
+.logo-placeholder span { font-size: 12px; color: rgba(255,255,255,0.6); white-space: nowrap; }
+.logo-placeholder img { width: 80px; height: 40px; object-fit: contain; opacity: 0.9; }
+
+/* PAGE HERO */
+.page-hero { background: #111; color: #fff; padding: 56px 40px; }
+.page-hero h1 { font-size: 34px; font-weight: 700; margin-bottom: 10px; }
+.page-hero p { font-size: 15px; color: rgba(255,255,255,0.6); max-width: 480px; line-height: 1.7; }
+.container { max-width: 900px; margin: 0 auto; padding: 56px 40px; }
+
+/* AREA */
+.area-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 32px; }
+.area-card { border: 1px solid #eee; border-radius: 12px; padding: 24px; }
+.area-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+.area-badge { display: inline-block; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; }
+.badge-active { background: #111; color: #fff; }
+.badge-soon { background: #eee; color: #888; }
+.area-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.area-card ul li { font-size: 13px; color: #666; }
+.area-card ul li::before { content: "📍 "; }
+.area-note { background: #f5f5f5; border-radius: 8px; padding: 16px 20px; margin-top: 32px; font-size: 13px; color: #666; line-height: 1.7; }
+
+/* SERVICE */
+.service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 32px; }
+.service-card { border: 1px solid #eee; border-radius: 12px; overflow: hidden; cursor: pointer; transition: box-shadow 0.2s; }
+.service-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.service-img-wrap { position: relative; aspect-ratio: 4/3; background: #f0f0f0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.service-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.service-img-wrap img.loaded { display: block; }
+.service-img-placeholder { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #bbb; }
+.service-img-placeholder span { font-size: 40px; }
+.service-img-placeholder p { font-size: 11px; }
+.service-upload-btn { font-size: 11px; background: #111; color: #fff; border: none; padding: 5px 14px; border-radius: 20px; cursor: pointer; margin-top: 4px; }
+.service-card-body { padding: 16px 18px 18px; }
+.service-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.service-card p { font-size: 13px; color: #666; line-height: 1.6; }
+.service-tag { font-size: 11px; background: #f0f0f0; color: #666; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 8px; }
+.flow-list { display: flex; flex-direction: column; gap: 0; margin-top: 32px; }
+.flow-item { display: flex; gap: 18px; padding: 20px 0; border-bottom: 1px solid #eee; }
+.flow-num { width: 34px; height: 34px; border-radius: 50%; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.flow-item h4 { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+.flow-item p { font-size: 13px; color: #666; line-height: 1.6; }
+
+/* PRICE */
+.price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin-top: 32px; }
+.price-card { border: 1px solid #eee; border-radius: 12px; padding: 22px 16px; text-align: center; position: relative; }
+.price-card.popular { border: 2px solid #111; }
+.popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; font-size: 10px; padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
+.price-plan { font-size: 12px; color: #999; margin-bottom: 6px; }
+.price-duration { font-size: 26px; font-weight: 700; }
+.price-duration span { font-size: 13px; font-weight: 400; }
+.price-amount { font-size: 18px; font-weight: 700; margin: 6px 0; }
+.price-amount span { font-size: 11px; font-weight: 400; color: #999; }
+.price-delivery { font-size: 12px; color: #666; background: #f5f5f5; border-radius: 6px; padding: 5px 8px; margin-top: 10px; }
+.options-table { width: 100%; border-collapse: collapse; margin-top: 32px; font-size: 14px; }
+.options-table th { background: #111; color: #fff; padding: 10px 14px; text-align: left; }
+.options-table td { padding: 10px 14px; border-bottom: 1px solid #eee; }
+.options-table tr:hover td { background: #fafafa; }
+.price-note { background: #f5f5f5; border-radius: 8px; padding: 18px 22px; margin-top: 32px; }
+.price-note h4 { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.price-note ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.price-note ul li { font-size: 13px; color: #666; padding-left: 16px; position: relative; }
+.price-note ul li::before { content: "※"; position: absolute; left: 0; color: #aaa; }
+
+/* FAQ */
+.faq-category-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin: 40px 0 14px; padding-bottom: 8px; border-bottom: 2px solid #111; }
+.faq-item { border-bottom: 1px solid #eee; }
+.faq-q { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; cursor: pointer; font-size: 15px; font-weight: 500; gap: 16px; }
+.faq-toggle { font-size: 20px; color: #aaa; flex-shrink: 0; transition: transform 0.2s; }
+.faq-a { font-size: 14px; color: #666; line-height: 1.8; padding: 0 0 18px; display: none; }
+.faq-item.open .faq-a { display: block; }
+.faq-item.open .faq-toggle { transform: rotate(45deg); }
+.contact-box { background: #111; color: #fff; border-radius: 12px; padding: 32px; text-align: center; margin-top: 56px; }
+.contact-box h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+.contact-box p { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 20px; line-height: 1.7; }
+.contact-btn { display: inline-block; background: #fff; color: #111; padding: 12px 32px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+
+/* SECTION TITLE */
+.sec-title { font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+
+/* DIVIDER */
+.divider { height: 1px; background: #eee; margin: 0 40px; }
+
+/* FOOTER */
+footer { padding: 36px 40px; border-top: 1px solid #eee; }
+.footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+.footer-logo { font-size: 17px; font-weight: 700; }
+.footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-links a { font-size: 12px; color: #aaa; }
+.footer-copy { font-size: 12px; color: #ccc; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo" onclick="showPage('home')">Snap Dash</div>
+  <ul class="nav-links"><li><a onclick="showPage('home')" id="nav-home" data-ja="トップ" data-en="Top" data-zh="首页">トップ</a></li>
+    <li><a onclick="showPage('news')" data-ja="ニュース" data-en="News" data-zh="新闻">ニュース</a></li>
+    <li><a onclick="showPage('area')" data-ja="対応エリア" data-en="Area" data-zh="服务区域">対応エリア</a></li>
+    <li><a onclick="showPage('service')" data-ja="サービス" data-en="Service" data-zh="服务">サービス</a></li>
+    <li><a onclick="showPage('price')" data-ja="料金" data-en="Price" data-zh="价格">料金</a></li>
+    <li><a onclick="showPage('faq')" data-ja="よくある質問" data-en="FAQ" data-zh="常见问题">よくある質問</a></li>
+    <li><a onclick="showPage('partner')" data-ja="導入店舗様へ" data-en="For Partners" data-zh="合作店铺">導入店舗様へ</a></li>
+    <li><a onclick="showPage('recruit')" data-ja="カメラマン募集" data-en="Join Us" data-zh="招募摄影师">カメラマン募集</a></li>
+    <li><a onclick="showPage('contact')" data-ja="お問い合わせ" data-en="Contact" data-zh="联系我们">お問い合わせ</a></li>
+  </ul>
+  <div style="display:flex; gap:6px; margin-left:16px; flex-shrink:0;">
+    <button onclick="setLang('ja')" id="lang-ja" style="font-size:12px; padding:4px 10px; border-radius:20px; border:1px solid #111; background:#111; color:#fff; cursor:pointer;">日本語</button>
+    <button onclick="setLang('en')" id="lang-en" style="font-size:12px; padding:4px 10px; border-radius:20px; border:1px solid #ccc; background:#fff; color:#555; cursor:pointer;">EN</button>
+    <button onclick="setLang('zh')" id="lang-zh" style="font-size:12px; padding:4px 10px; border-radius:20px; border:1px solid #ccc; background:#fff; color:#555; cursor:pointer;">中文</button>
+  </div>
+</nav>
+
+<!-- ========== HOME ========== -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <h1 data-ja="プロの出張撮影を<br>あなたの店舗に。" data-en="Professional Photography<br>Delivered to Your Store." data-zh="专业上门摄影<br>为您的店铺服务。">プロの出張撮影を<br>あなたの店舗に。</h1>
+    <p data-ja="Snap Dashは、着物レンタル店・体験店舗・ホテルなどに出張撮影サービスを提供するBtoBサービスです。お客様の特別な体験をプロの写真で残しましょう。" data-en="Snap Dash is a B2B service that brings professional photographers to kimono rental shops, experience venues, and hotels. Capture your customers' special moments with stunning photos." data-zh="Snap Dash是一项B2B服务，为和服租赁店、体验店铺、酒店等提供上门摄影服务。让专业摄影师记录客户的特别体验。">Snap Dashは、着物レンタル店・体験店舗・ホテルなどに出張撮影サービスを提供するBtoBサービスです。お客様の特別な体験をプロの写真で残しましょう。</p>
+  </div>
+
+  <div class="section">
+    <div class="two-col">
+      <div>
+        <div class="section-label" data-ja="Snap Dashについて" data-en="About Snap Dash" data-zh="关于Snap Dash">Snap Dashについて</div>
+        <h2 data-ja="店舗の価値を、写真で高める。" data-en="Elevate Your Store's Value Through Photography." data-zh="用照片提升店铺价值。">店舗の価値を、写真で高める。</h2>
+        <p data-ja="着物姿・体験の瞬間・旅の思い出——お客様にとって特別なシーンをプロが撮影することで、口コミ・SNS拡散・リピート率向上につながります。" data-en="Kimono moments, cultural experiences, travel memories — when professionals capture what matters to your customers, it drives reviews, social sharing, and repeat visits." data-zh="和服风姿、体验瞬间、旅行记忆——专业摄影师捕捉客户的特别时刻，有助于口碑传播、SNS扩散和回头客增加。">着物姿・体験の瞬間・旅の思い出——お客様にとって特別なシーンをプロが撮影することで、口コミ・SNS拡散・リピート率向上につながります。</p>
+      </div>
+      <div class="img-box">📸</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section section-dark">
+    <div style="max-width:900px; margin:0 auto;">
+      <div class="section-label" data-ja="実績" data-en="Track Record" data-zh="业绩">実績</div>
+      <h2 data-ja="選ばれる理由" data-en="Why Choose Snap Dash" data-zh="选择Snap Dash的理由">選ばれる理由</h2>
+      <p style="margin-bottom:40px;" data-ja="京都を中心に多数の着物レンタル店・体験施設・ホテルに導入実績があります。各業種との撮影シナジーで、新たな収益と顧客満足を同時に実現します。" data-en="We have a proven track record with numerous partners in Kyoto. Our photography synergy model creates new revenue streams across all tourism sectors." data-zh="我们在京都拥有丰富的导入实绩，通过摄影协同效应为各行业创造新的收益。">京都を中心に多数の着物レンタル店・体験施設・ホテルに導入実績があります。各業種との撮影シナジーで、新たな収益と顧客満足を同時に実現します。</p>
+
+      <!-- シナジー図 -->
+      <div style="background:rgba(255,255,255,0.05); border-radius:16px; padding:32px 16px;">
+        <svg width="100%" viewBox="0 0 680 620" role="img">
+          <title>Snap Dash インバウンド撮影シナジー図</title>
+          <desc>撮影を中心に、着物・体験・ホテル・ツアー・コンビニ・タクシーとのシナジーを示す図</desc>
+
+          <!-- 中央：Snap Dash -->
+          <circle cx="340" cy="300" r="72" fill="#7F77DD" stroke="#AFA9EC" stroke-width="1"/>
+          <text font-family="-apple-system,sans-serif" font-size="14" font-weight="500" x="340" y="292" text-anchor="middle" fill="#fff">Snap Dash</text>
+          <text font-family="-apple-system,sans-serif" font-size="12" x="340" y="312" text-anchor="middle" fill="#CECBF6">出張撮影</text>
+
+          <!-- 上：着物レンタル -->
+          <circle cx="340" cy="108" r="62" fill="#D85A30" stroke="#F0997B" stroke-width="1"/>
+          <text font-family="-apple-system,sans-serif" font-size="14" font-weight="500" x="340" y="96" text-anchor="middle" fill="#fff">着物</text>
+          <text font-family="-apple-system,sans-serif" font-size="14" font-weight="500" x="340" y="114" text-anchor="middle" fill="#fff">レンタル</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="340" y="132" text-anchor="middle" fill="#FAECE7">着付け後すぐ撮影</text>
+
+          <!-- 右上：ホテル -->
+          <circle cx="546" cy="190" r="62" fill="#185FA5" stroke="#85B7EB" stroke-width="1"/>
+          <text font-family="-apple-system,sans-serif" font-size="13" font-weight="500" x="546" y="178" text-anchor="middle" fill="#fff">ホテル・旅館</text>
+          <text font-family="-apple-system,sans-serif" font-size="13" font-weight="500" x="546" y="196" text-anchor="middle" fill="#fff">民泊</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="546" y="214" text-anchor="middle" fill="#B5D4F4">宿泊×撮影プラン</text>
+
+          <!-- 右下：ツアー -->
+          <circle cx="546" cy="410" r="62" fill="#0F6E56" stroke="#5DCAA5" stroke-width="1"/>
+          <text font-family="-apple-system,sans-serif" font-size="14" font-weight="500" x="546" y="398" text-anchor="middle" fill="#fff">ツアー</text>
+          <text font-family="-apple-system,sans-serif" font-size="14" font-weight="500" x="546" y="416" text-anchor="middle" fill="#fff">ガイド</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="546" y="434" text-anchor="middle" fill="#9FE1CB">同行撮影</text>
+
+          <!-- 下：体験店舗 -->
+          <circle cx="340" cy="492" r="62" fill="#BA7517" stroke="#EF9F27" stroke-width="1"/>
+          <text font-family="-apple-system,sans-serif" font-size="14" font-weight="500" x="340" y="480" text-anchor="middle" fill="#fff">体験店舗</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="340" y="500" text-anchor="middle" fill="#FAC775">茶道・伝統体験</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="340" y="516" text-anchor="middle" fill="#FAC775">×撮影</text>
+
+          <!-- 左下：タクシー・コンビニ -->
+          <circle cx="134" cy="410" r="62" fill="#3B6D11" stroke="#97C459" stroke-width="1"/>
+          <text font-family="-apple-system,sans-serif" font-size="14" font-weight="500" x="134" y="398" text-anchor="middle" fill="#fff">タクシー</text>
+          <text font-family="-apple-system,sans-serif" font-size="14" font-weight="500" x="134" y="416" text-anchor="middle" fill="#fff">コンビニ</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="134" y="434" text-anchor="middle" fill="#C0DD97">送客・案内</text>
+
+          <!-- 左上：インバウンド -->
+          <circle cx="134" cy="190" r="62" fill="#993556" stroke="#ED93B1" stroke-width="1"/>
+          <text font-family="-apple-system,sans-serif" font-size="13" font-weight="500" x="134" y="178" text-anchor="middle" fill="#fff">インバウンド</text>
+          <text font-family="-apple-system,sans-serif" font-size="13" font-weight="500" x="134" y="196" text-anchor="middle" fill="#fff">事業者</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="134" y="214" text-anchor="middle" fill="#F4C0D1">外国人対応◎</text>
+
+          <!-- 接続線 -->
+          <line x1="340" y1="228" x2="340" y2="170" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="392" y1="260" x2="492" y2="224" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="392" y1="340" x2="492" y2="376" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="340" y1="372" x2="340" y2="430" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="288" y1="340" x2="188" y2="376" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="288" y1="260" x2="188" y2="224" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="5 4"/>
+
+          <!-- シナジーラベル -->
+          <rect x="260" y="186" width="160" height="22" rx="11" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="340" y="197" text-anchor="middle" dominant-baseline="central" fill="#fff">撮影×着物 = 必撮！</text>
+
+          <rect x="426" y="217" width="160" height="22" rx="11" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="506" y="228" text-anchor="middle" dominant-baseline="central" fill="#fff">宿泊×撮影 = 収益UP</text>
+
+          <rect x="426" y="358" width="160" height="22" rx="11" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="506" y="369" text-anchor="middle" dominant-baseline="central" fill="#fff">ツアー×撮影 = 思い出</text>
+
+          <rect x="260" y="394" width="160" height="22" rx="11" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="340" y="405" text-anchor="middle" dominant-baseline="central" fill="#fff">体験×撮影 = SNS拡散</text>
+
+          <rect x="90" y="358" width="156" height="22" rx="11" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="168" y="369" text-anchor="middle" dominant-baseline="central" fill="#fff">送客→撮影 = 紹介収益</text>
+
+          <rect x="90" y="217" width="156" height="22" rx="11" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="11" x="168" y="228" text-anchor="middle" dominant-baseline="central" fill="#fff">英語対応で外客獲得</text>
+
+          <!-- タイトル -->
+          <text font-family="-apple-system,sans-serif" font-size="14" font-weight="500" x="340" y="582" text-anchor="middle" fill="rgba(255,255,255,0.7)">インバウンド×撮影のシナジーマップ</text>
+          <text font-family="-apple-system,sans-serif" font-size="12" x="340" y="600" text-anchor="middle" fill="rgba(255,255,255,0.4)">各業種と撮影が組み合わさることで、新たな収益が生まれます</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="section section-gray" style="text-align:center;">
+    <div class="section-label" style="text-align:center;" data-ja="使い方" data-en="How It Works" data-zh="使用方法">使い方</div>
+    <h2 data-ja="たった5ステップで撮影完了" data-en="5 Simple Steps to Your Perfect Shot" data-zh="仅需5步完成拍摄">たった5ステップで撮影完了</h2>
+    <div class="steps-wrap" style="text-align:left;">
+      <div class="step">
+        <div class="step-left">
+          <div class="step-header"><div class="step-num">1</div><h3 data-ja="撮影場所を指定する" data-en="Choose Your Location" data-zh="指定拍摄地点">撮影場所を指定する</h3></div>
+          <p data-ja="アプリを開くと現在地の地図が表示されます。撮影希望場所にピンを移動して次へ進みます。" data-en="Open the app and your current location appears on the map. Move the pin to your desired shooting location and proceed." data-zh="打开应用后显示当前位置地图。将图钉移动到拍摄希望地点后进行下一步。">アプリを開くと現在地の地図が表示されます。撮影希望場所にピンを移動して次へ進みます。</p>
+        </div>
+        <div class="phone-mockup">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen" onclick="document.getElementById('img1').click()">
+              <img id="img1-preview" alt="ステップ1" style="display:none; width:100%;">
+              <div class="phone-screen-placeholder" id="placeholder1"><span>📷</span><p>タップして写真を追加</p><button class="upload-btn">写真を選ぶ</button></div>
+            </div>
+            <div class="phone-home-bar"></div>
+          </div>
+          <input type="file" id="img1" class="step-img-input" accept="image/*" onchange="previewPhone(this,'img1-preview','placeholder1')">
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left">
+          <div class="step-header"><div class="step-num">2</div><h3 data-ja="カメラマンを呼ぶ" data-en="Call a Photographer" data-zh="呼叫摄影师">カメラマンを呼ぶ</h3></div>
+          <p data-ja="撮影メニューと希望スタイルを選んで「カメラマンを呼ぶ」ボタンを押すだけ。クーポンもここで使えます。" data-en="Select your shooting menu and preferred style, then tap 'Call Photographer'. Coupons can also be applied here." data-zh="选择拍摄菜单和希望风格，按下「呼叫摄影师」按钮即可。优惠券也可在此使用。">撮影メニューと希望スタイルを選んで「カメラマンを呼ぶ」ボタンを押すだけ。クーポンもここで使えます。</p>
+        </div>
+        <div class="phone-mockup">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen" onclick="document.getElementById('img2').click()">
+              <img id="img2-preview" alt="ステップ2" style="display:none; width:100%;">
+              <div class="phone-screen-placeholder" id="placeholder2"><span>📷</span><p>タップして写真を追加</p><button class="upload-btn">写真を選ぶ</button></div>
+            </div>
+            <div class="phone-home-bar"></div>
+          </div>
+          <input type="file" id="img2" class="step-img-input" accept="image/*" onchange="previewPhone(this,'img2-preview','placeholder2')">
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left">
+          <div class="step-header"><div class="step-num">3</div><h3 data-ja="カメラマンの到着を待つ" data-en="Wait for the Photographer" data-zh="等待摄影师到来">カメラマンの到着を待つ</h3></div>
+          <p data-ja="到着予定時間がリアルタイムで表示されます。チャットで撮影イメージを共有できます。" data-en="The estimated arrival time is shown in real time. You can share your shoot ideas with the photographer via chat." data-zh="实时显示预计到达时间。可通过聊天与摄影师共享拍摄意象。">到着予定時間がリアルタイムで表示されます。チャットで撮影イメージを共有できます。</p>
+        </div>
+        <div class="phone-mockup">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen" onclick="document.getElementById('img3').click()">
+              <img id="img3-preview" alt="ステップ3" style="display:none; width:100%;">
+              <div class="phone-screen-placeholder" id="placeholder3"><span>📷</span><p>タップして写真を追加</p><button class="upload-btn">写真を選ぶ</button></div>
+            </div>
+            <div class="phone-home-bar"></div>
+          </div>
+          <input type="file" id="img3" class="step-img-input" accept="image/*" onchange="previewPhone(this,'img3-preview','placeholder3')">
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left">
+          <div class="step-header"><div class="step-num">4</div><h3 data-ja="撮影する" data-en="Shoot!" data-zh="开始拍摄">撮影する</h3></div>
+          <p data-ja="カメラマンが到着したら通知が届きます。あとはプロにお任せして素敵な一枚を残しましょう。" data-en="You'll be notified when the photographer arrives. Just leave it to the pro and enjoy your special moment." data-zh="摄影师到达时会收到通知。之后交给专业摄影师，留下美丽的一刻。">カメラマンが到着したら通知が届きます。あとはプロにお任せして素敵な一枚を残しましょう。</p>
+        </div>
+        <div class="phone-mockup">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen" onclick="document.getElementById('img4').click()">
+              <img id="img4-preview" alt="ステップ4" style="display:none; width:100%;">
+              <div class="phone-screen-placeholder" id="placeholder4"><span>📷</span><p>タップして写真を追加</p><button class="upload-btn">写真を選ぶ</button></div>
+            </div>
+            <div class="phone-home-bar"></div>
+          </div>
+          <input type="file" id="img4" class="step-img-input" accept="image/*" onchange="previewPhone(this,'img4-preview','placeholder4')">
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left">
+          <div class="step-header"><div class="step-num">5</div><h3 data-ja="写真を受け取る" data-en="Receive Your Photos" data-zh="接收照片">写真を受け取る</h3></div>
+          <p data-ja="撮影後はアプリ内で写真をダウンロード。お支払いもアプリ内で完結します。" data-en="Download your photos directly in the app after the shoot. Payment is also completed within the app." data-zh="拍摄后在应用内下载照片。付款也在应用内完成。">撮影後はアプリ内で写真をダウンロード。お支払いもアプリ内で完結します。</p>
+        </div>
+        <div class="phone-mockup">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen" onclick="document.getElementById('img5').click()">
+              <img id="img5-preview" alt="ステップ5" style="display:none; width:100%;">
+              <div class="phone-screen-placeholder" id="placeholder5"><span>📷</span><p>タップして写真を追加</p><button class="upload-btn">写真を選ぶ</button></div>
+            </div>
+            <div class="phone-home-bar"></div>
+          </div>
+          <input type="file" id="img5" class="step-img-input" accept="image/*" onchange="previewPhone(this,'img5-preview','placeholder5')">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label" data-ja="ニュース" data-en="News" data-zh="新闻">ニュース</div>
+    <h2 data-ja="お知らせ" data-en="Latest News" data-zh="最新消息">お知らせ</h2>
+    <div class="news-list">
+      <div class="news-item" onclick="showPage('news')">
+        <div class="news-meta"><span class="news-date">2026.06.23</span><span class="news-tag" data-ja="お知らせ" data-en="News" data-zh="通知">お知らせ</span></div>
+        <div><div class="news-title" data-ja="京都エリアでサービス開始のお知らせ" data-en="Service Launch in Kyoto Area" data-zh="京都地区服务启动通知">京都エリアでサービス開始のお知らせ</div></div>
+      </div>
+      <div class="news-item" onclick="showPage('news')">
+        <div class="news-meta"><span class="news-date">2026.06.10</span><span class="news-tag" data-ja="新機能" data-en="New Feature" data-zh="新功能">新機能</span></div>
+        <div><div class="news-title" data-ja="事前予約機能が全プランで利用可能になりました" data-en="Advance Booking Now Available for All Plans" data-zh="所有套餐均可使用预约功能">事前予約機能が全プランで利用可能になりました</div></div>
+      </div>
+      <div class="news-item" onclick="showPage('news')">
+        <div class="news-meta"><span class="news-date">2026.05.01</span><span class="news-tag" data-ja="お知らせ" data-en="News" data-zh="通知">お知らせ</span></div>
+        <div><div class="news-title" data-ja="Snap Dash アプリ 正式リリースのお知らせ" data-en="Snap Dash App Official Launch" data-zh="Snap Dash应用正式发布通知">Snap Dash アプリ 正式リリースのお知らせ</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-section">
+    <h2 data-ja="導入をご検討の店舗様へ" data-en="For Stores Considering Partnership" data-zh="致考虑导入的店铺">導入をご検討の店舗様へ</h2>
+    <p data-ja="着物レンタル店・体験店舗・ホテルなど、お客様の特別な体験をさらに価値あるものにするSnap Dashの導入をご支援します。" data-en="We support the introduction of Snap Dash to kimono rental shops, experience venues, hotels, and more — adding greater value to your customers' special experiences." data-zh="我们支持和服租赁店、体验店铺、酒店等导入Snap Dash，为客户的特别体验增添更多价值。">着物レンタル店・体験店舗・ホテルなど、お客様の特別な体験をさらに価値あるものにするSnap Dashの導入をご支援します。</p>
+
+    <!-- ロゴマーキー -->
+    <div style="margin: 32px -40px 8px; overflow: hidden; position: relative;">
+      <div style="position:absolute; left:0; top:0; bottom:0; width:80px; background:linear-gradient(to right, #111, transparent); z-index:2;"></div>
+      <div style="position:absolute; right:0; top:0; bottom:0; width:80px; background:linear-gradient(to left, #111, transparent); z-index:2;"></div>
+      <div class="logo-track" id="logo-track">
+        <div class="logo-item"><div class="logo-placeholder" onclick="triggerLogoUpload(0)" id="logo-box-0"><img id="logo-img-0" style="display:none; width:80px; height:40px; object-fit:contain; opacity:0.9;"><span id="logo-label-0">＋ ロゴを追加</span></div></div>
+        <div class="logo-item"><div class="logo-placeholder" onclick="triggerLogoUpload(1)" id="logo-box-1"><img id="logo-img-1" style="display:none; width:80px; height:40px; object-fit:contain; opacity:0.9;"><span id="logo-label-1">＋ ロゴを追加</span></div></div>
+        <div class="logo-item"><div class="logo-placeholder" onclick="triggerLogoUpload(2)" id="logo-box-2"><img id="logo-img-2" style="display:none; width:80px; height:40px; object-fit:contain; opacity:0.9;"><span id="logo-label-2">＋ ロゴを追加</span></div></div>
+        <div class="logo-item"><div class="logo-placeholder" onclick="triggerLogoUpload(3)" id="logo-box-3"><img id="logo-img-3" style="display:none; width:80px; height:40px; object-fit:contain; opacity:0.9;"><span id="logo-label-3">＋ ロゴを追加</span></div></div>
+        <div class="logo-item"><div class="logo-placeholder" onclick="triggerLogoUpload(4)" id="logo-box-4"><img id="logo-img-4" style="display:none; width:80px; height:40px; object-fit:contain; opacity:0.9;"><span id="logo-label-4">＋ ロゴを追加</span></div></div>
+        <div class="logo-item"><div class="logo-placeholder" onclick="triggerLogoUpload(5)" id="logo-box-5"><img id="logo-img-5" style="display:none; width:80px; height:40px; object-fit:contain; opacity:0.9;"><span id="logo-label-5">＋ ロゴを追加</span></div></div>
+        <div class="logo-item"><div class="logo-placeholder" onclick="triggerLogoUpload(6)" id="logo-box-6"><img id="logo-img-6" style="display:none; width:80px; height:40px; object-fit:contain; opacity:0.9;"><span id="logo-label-6">＋ ロゴを追加</span></div></div>
+        <!-- ループ用コピー（JSで自動生成） -->
+      </div>
+      <!-- 非表示のファイル入力 -->
+      <input type="file" id="logo-file-input" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
+    </div>
+    <p style="font-size:11px; color:rgba(255,255,255,0.25); margin-bottom:24px;">※ 導入店舗様のロゴを順次掲載予定</p>
+
+  </div>
+</div>
+
+<!-- ========== NEWS ========== -->
+<div id="page-news" class="page">
+  <div class="page-hero"><h1>ニュース</h1><p>Snap Dashの最新情報をお届けします。</p></div>
+  <div class="container">
+    <div class="news-list">
+      <div class="news-item">
+        <div class="news-meta"><span class="news-date">2026.06.23</span><span class="news-tag">お知らせ</span></div>
+        <div><div class="news-title">京都エリアでサービス開始のお知らせ</div><div class="news-desc">京都市内全域でSnap Dashをご利用いただけるようになりました。嵐山・金閣寺など人気スポットでの撮影にも対応します。</div></div>
+      </div>
+      <div class="news-item">
+        <div class="news-meta"><span class="news-date">2026.06.10</span><span class="news-tag">新機能</span></div>
+        <div><div class="news-title">事前予約機能が全プランで利用可能になりました</div><div class="news-desc">希望日時を事前に指定して撮影を予約できる機能をリリースしました。</div></div>
+      </div>
+      <div class="news-item">
+        <div class="news-meta"><span class="news-date">2026.06.01</span><span class="news-tag">キャンペーン</span></div>
+        <div><div class="news-title">新規登録で500円クーポンプレゼント中</div><div class="news-desc">アプリ新規登録のお客様全員に、500円割引クーポンを自動付与しています。</div></div>
+      </div>
+      <div class="news-item">
+        <div class="news-meta"><span class="news-date">2026.05.01</span><span class="news-tag">お知らせ</span></div>
+        <div><div class="news-title">Snap Dash アプリ 正式リリースのお知らせ</div><div class="news-desc">出張撮影サービス「Snap Dash」を正式リリースしました。プロカメラマンがあなたのもとへすぐに駆けつけます。</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== AREA ========== -->
+<div id="page-area" class="page">
+  <div class="page-hero"><h1>対応エリア</h1><p>現在、京都エリアを中心にサービスを展開中。順次エリアを拡大予定です。</p></div>
+  <div class="container">
+    <div class="area-grid">
+      <div class="area-card">
+        <span class="area-badge badge-active">サービス中</span>
+        <h3>京都エリア</h3>
+        <ul>
+          <li>京都市内全域</li>
+          <li>八坂の塔・東山エリア</li>
+          <li>伏見稲荷大社周辺</li>
+          <li>祇園・花見小路エリア</li>
+          <li>嵐山・嵯峨野エリア</li>
+        </ul>
+      </div>
+      <div class="area-card" style="opacity:0.6;">
+        <span class="area-badge badge-soon">準備中</span>
+        <h3>大阪エリア</h3>
+        <ul><li>大阪市内</li><li>難波・心斎橋</li><li>梅田・北区</li></ul>
+      </div>
+      <div class="area-card" style="opacity:0.6;">
+        <span class="area-badge badge-soon">準備中</span>
+        <h3>東京エリア</h3>
+        <ul><li>都内全域（予定）</li><li>順次拡大予定</li></ul>
+      </div>
+    </div>
+    <div class="area-note">※ 対応エリアは順次拡大予定です。ご希望のエリアへの対応はお問い合わせください。<br>※ エリア外の撮影は別途交通費が発生する場合があります。</div>
+
+    <!-- 人気撮影スポット -->
+    <div style="margin-top: 56px;">
+      <div class="sec-title">人気撮影スポット</div>
+      <p style="font-size: 14px; color: #666; margin-top: 8px; margin-bottom: 24px;">京都を代表するフォトジェニックなスポットで、特別な一枚を。</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid #eee;">
+          <div style="background: #f0f0f0; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 40px;">🗼</div>
+          <div style="padding: 14px 16px;">
+            <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 4px;">八坂の塔</h4>
+            <p style="font-size: 12px; color: #888; line-height: 1.6;">東山のシンボル。着物姿との相性が抜群で、SNS映えする一枚が撮れます。</p>
+          </div>
+        </div>
+
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid #eee;">
+          <div style="background: #f0f0f0; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 40px;">⛩️</div>
+          <div style="padding: 14px 16px;">
+            <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 4px;">伏見稲荷大社周辺</h4>
+            <p style="font-size: 12px; color: #888; line-height: 1.6;">千本鳥居が幻想的な空間を演出。朝方の光が特に美しいスポットです。</p>
+          </div>
+        </div>
+
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid #eee;">
+          <div style="background: #f0f0f0; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 40px;">🏮</div>
+          <div style="padding: 14px 16px;">
+            <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 4px;">祇園・花見小路</h4>
+            <p style="font-size: 12px; color: #888; line-height: 1.6;">石畳と格子戸が続く京都らしい風景。夕暮れ時の雰囲気が格別です。</p>
+          </div>
+        </div>
+
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid #eee;">
+          <div style="background: #f0f0f0; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 40px;">🌿</div>
+          <div style="padding: 14px 16px;">
+            <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 4px;">嵐山・竹林の小径</h4>
+            <p style="font-size: 12px; color: #888; line-height: 1.6;">青々とした竹林が広がる絶景スポット。四季折々の自然も楽しめます。</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SERVICE ========== -->
+<div id="page-service" class="page">
+  <div class="page-hero"><h1>サービス</h1><p>あらゆる撮影シーンに対応。プロカメラマンがあなたの大切な瞬間を美しく残します。</p></div>
+  <div class="container">
+    <div class="sec-title">撮影対応内容</div>
+    <div class="service-grid">
+
+      <div class="service-card">
+        <div class="service-img-wrap" onclick="document.getElementById('svc1').click()">
+          <div class="service-img-placeholder"><span>👘</span><p>クリックして写真を追加</p><button class="service-upload-btn">写真を選ぶ</button></div>
+          <img id="svc1-preview" alt="着物撮影">
+          <input type="file" id="svc1" class="step-img-input" accept="image/*" onchange="previewImg(this,'svc1-preview')">
+        </div>
+        <div class="service-card-body">
+          <h3>着物撮影</h3>
+          <p>京都の街並みや神社仏閣を背景に、着物姿の美しい一枚を撮影します。</p>
+          <span class="service-tag">和装</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-img-wrap" onclick="document.getElementById('svc2').click()">
+          <div class="service-img-placeholder"><span>🍵</span><p>クリックして写真を追加</p><button class="service-upload-btn">写真を選ぶ</button></div>
+          <img id="svc2-preview" alt="茶道撮影">
+          <input type="file" id="svc2" class="step-img-input" accept="image/*" onchange="previewImg(this,'svc2-preview')">
+        </div>
+        <div class="service-card-body">
+          <h3>茶道撮影</h3>
+          <p>茶道体験の凛とした空気感と所作の美しさをプロが丁寧に記録します。</p>
+          <span class="service-tag">体験</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-img-wrap" onclick="document.getElementById('svc3').click()">
+          <div class="service-img-placeholder"><span>🗺️</span><p>クリックして写真を追加</p><button class="service-upload-btn">写真を選ぶ</button></div>
+          <img id="svc3-preview" alt="ツアー撮影">
+          <input type="file" id="svc3" class="step-img-input" accept="image/*" onchange="previewImg(this,'svc3-preview')">
+        </div>
+        <div class="service-card-body">
+          <h3>ツアー撮影</h3>
+          <p>観光ツアーに同行し、旅の思い出をドキュメンタリー形式で撮影します。</p>
+          <span class="service-tag">ツアー</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-img-wrap" onclick="document.getElementById('svc4').click()">
+          <div class="service-img-placeholder"><span>💒</span><p>クリックして写真を追加</p><button class="service-upload-btn">写真を選ぶ</button></div>
+          <img id="svc4-preview" alt="婚礼撮影">
+          <input type="file" id="svc4" class="step-img-input" accept="image/*" onchange="previewImg(this,'svc4-preview')">
+        </div>
+        <div class="service-card-body">
+          <h3>婚礼撮影</h3>
+          <p>結婚式・前撮り・後撮りなど、ふたりの大切な日を最高の形で残します。</p>
+          <span class="service-tag">ブライダル</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-img-wrap" onclick="document.getElementById('svc5').click()">
+          <div class="service-img-placeholder"><span>💍</span><p>クリックして写真を追加</p><button class="service-upload-btn">写真を選ぶ</button></div>
+          <img id="svc5-preview" alt="プロポーズ撮影">
+          <input type="file" id="svc5" class="step-img-input" accept="image/*" onchange="previewImg(this,'svc5-preview')">
+        </div>
+        <div class="service-card-body">
+          <h3>プロポーズ撮影</h3>
+          <p>サプライズのプロポーズシーンをさりげなく、感動的に切り取ります。</p>
+          <span class="service-tag">カップル</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-img-wrap" onclick="document.getElementById('svc6').click()">
+          <div class="service-img-placeholder"><span>👨‍👩‍👧‍👦</span><p>クリックして写真を追加</p><button class="service-upload-btn">写真を選ぶ</button></div>
+          <img id="svc6-preview" alt="家族撮影">
+          <input type="file" id="svc6" class="step-img-input" accept="image/*" onchange="previewImg(this,'svc6-preview')">
+        </div>
+        <div class="service-card-body">
+          <h3>家族撮影</h3>
+          <p>旅行・記念日・日常のひとコマなど、家族みんなの笑顔を残します。</p>
+          <span class="service-tag">ファミリー</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-img-wrap" onclick="document.getElementById('svc7').click()">
+          <div class="service-img-placeholder"><span>🌙</span><p>クリックして写真を追加</p><button class="service-upload-btn">写真を選ぶ</button></div>
+          <img id="svc7-preview" alt="ナイト・早朝撮影">
+          <input type="file" id="svc7" class="step-img-input" accept="image/*" onchange="previewImg(this,'svc7-preview')">
+        </div>
+        <div class="service-card-body">
+          <h3>ナイト・早朝撮影</h3>
+          <p>夜の幻想的な光や、人が少ない早朝の静寂の中で、昼間とは違う特別な一枚を撮影します。</p>
+          <span class="service-tag">夜間・早朝対応</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-img-wrap" onclick="document.getElementById('svc8').click()">
+          <div class="service-img-placeholder"><span>🚶</span><p>クリックして写真を追加</p><button class="service-upload-btn">写真を選ぶ</button></div>
+          <img id="svc8-preview" alt="ストリートスナップ">
+          <input type="file" id="svc8" class="step-img-input" accept="image/*" onchange="previewImg(this,'svc8-preview')">
+        </div>
+        <div class="service-card-body">
+          <h3>ストリートスナップ</h3>
+          <p>街歩きしながら自然体の表情や仕草をナチュラルに撮影します。</p>
+          <span class="service-tag">スナップ</span>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin-top:48px;"><div class="sec-title">ご利用の流れ</div>
+      <div class="flow-list">
+        <div class="flow-item"><div class="flow-num">1</div><div><h4>アプリから撮影を申し込む</h4><p>撮影プラン・メニュー・場所を選んでカメラマンをリクエストします。</p></div></div>
+        <div class="flow-item"><div class="flow-num">2</div><div><h4>カメラマンとマッチング</h4><p>AIがあなたのニーズに合ったカメラマンをすぐにマッチングします。</p></div></div>
+        <div class="flow-item"><div class="flow-num">3</div><div><h4>撮影当日</h4><p>指定した場所でカメラマンと合流。希望のスタイルで撮影を進めます。</p></div></div>
+        <div class="flow-item"><div class="flow-num">4</div><div><h4>写真の受け取り</h4><p>アプリ内のチャット画面でカメラマンからGoogleドライブで納品されます。</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PRICE ========== -->
+<div id="page-price" class="page">
+  <div class="page-hero"><h1>料金</h1><p>シーンや目的に合わせてプランをお選びください。すべてのプランにレタッチ済み写真が含まれます。</p></div>
+  <div class="container">
+    <div class="price-grid">
+      <div class="price-card popular"><div class="popular-badge">人気No.1</div><div class="price-plan">ライト</div><div class="price-duration">10<span>分</span></div><div class="price-amount">¥11,000<span>税込</span></div><div class="price-delivery">📷 20枚納品</div></div>
+      <div class="price-card popular"><div class="popular-badge">人気No.1</div><div class="price-plan">ベーシック</div><div class="price-duration">30<span>分</span></div><div class="price-amount">¥16,000<span>税込</span></div><div class="price-delivery">📷 30枚納品</div></div>
+      <div class="price-card"><div class="price-plan">スタンダード</div><div class="price-duration">60<span>分</span></div><div class="price-amount">¥29,800<span>税込</span></div><div class="price-delivery">📷 50枚納品</div></div>
+      <div class="price-card"><div class="price-plan">プレミアム</div><div class="price-duration">120<span>分</span></div><div class="price-amount">¥55,000<span>税込</span></div><div class="price-delivery">📷 100枚納品</div></div>
+      <div class="price-card"><div class="price-plan">フル</div><div class="price-duration">180<span>分</span></div><div class="price-amount">¥79,800<span>税込</span></div><div class="price-delivery">📷 200枚納品</div></div>
+    </div>
+    <div style="margin-top:40px;"><h3 style="font-size:16px;font-weight:600;margin-bottom:14px;">オプション</h3>
+      <table class="options-table">
+        <thead><tr><th>オプション内容</th><th>料金</th></tr></thead>
+        <tbody>
+          <tr><td>延長撮影 10分 / 20枚納品</td><td>¥11,000（税込）</td></tr>
+          <tr><td>延長撮影 30分 / 30枚納品</td><td>¥16,000（税込）</td></tr>
+          <tr><td>延長撮影 60分 / 50枚納品</td><td>¥28,900（税込）</td></tr>
+          <tr><td>当日納品オプション</td><td>¥3,000（税込）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="price-note"><h4>料金に関する注意事項</h4>
+      <ul>
+        <li>表示価格はすべて税込です。</li>
+        <li>写真の納品は撮影後3〜7日以内が目安です。</li>
+        <li>キャンセルは撮影24時間前までは無料、それ以降はキャンセル料が発生します。</li>
+        <li>お支払いはアプリ内クレジットカード決済のみです。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== FAQ ========== -->
+<div id="page-faq" class="page">
+  <div class="page-hero"><h1>よくある質問</h1><p>お客様からよくいただくご質問をまとめました。</p></div>
+  <div class="container">
+    <div class="faq-category-label">サービスについて</div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">どのエリアで利用できますか？<span class="faq-toggle">+</span></div><div class="faq-a">京都エリアにて、八坂の塔・祇園・伏見稲荷大社（周辺）・清水寺周辺などでサービスを提供しています。今後は大阪・東京エリアへの展開も予定しています。</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">当日すぐに予約できますか？<span class="faq-toggle">+</span></div><div class="faq-a">はい、アプリからすぐにカメラマンをリクエストできます。近くにいるカメラマンとマッチングされ、最短5分で撮影を開始できます。事前予約も可能です。</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">カメラマンは選べますか？<span class="faq-toggle">+</span></div><div class="faq-a">AIが最適なカメラマンをご提案しますが、プロフィールや過去の作品を見て指名することも可能です。</div></div>
+
+    <div class="faq-category-label">料金・支払いについて</div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">支払い方法は何が使えますか？<span class="faq-toggle">+</span></div><div class="faq-a">クレジットカード（VISA・Mastercard・JCB・American Express）がご利用いただけます。アプリ内で事前登録が必要です。</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">キャンセルはできますか？<span class="faq-toggle">+</span></div><div class="faq-a">撮影24時間前までは無料でキャンセルできます。24時間以内はプラン料金の50%、当日は全額のキャンセル料が発生します。</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">領収書は発行してもらえますか？<span class="faq-toggle">+</span></div><div class="faq-a">はい、アプリ内から電子領収書を発行できます。法人のお客様は請求書の発行も対応しておりますので、お問い合わせください。</div></div>
+
+    <div class="faq-category-label">写真の納品について</div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">写真はいつ受け取れますか？<span class="faq-toggle">+</span></div><div class="faq-a">撮影後3〜7営業日以内に納品いたします。アプリ内のチャットにてカメラマンからGoogleドライブで写真をお送りします。ダウンロード期間は1ヶ月となりますので、期限内にご保存ください。</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">写真のデータ形式は何ですか？<span class="faq-toggle">+</span></div><div class="faq-a">レタッチ済みのJPEG形式でお渡しします。RAWデータのお渡しはしておりません。あらかじめご了承ください。</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">写真の使用に制限はありますか？<span class="faq-toggle">+</span></div><div class="faq-a">個人利用・SNS投稿は自由にご利用いただけます。商業利用（広告・販売目的）は別途ライセンス契約が必要です。</div></div>
+
+    <div class="contact-box">
+      <h3>解決しない場合はお気軽にご連絡を</h3>
+      <p>上記で解決しないご質問は、サポートチームが丁寧にお答えします。</p>
+      <div class="contact-btn">お問い合わせはこちら</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<!-- ========== PARTNER ========== -->
+<div id="page-partner" class="page">
+  <div class="page-hero" style="background: #0f2027;">
+    <h1>導入店舗様へ</h1>
+    <p>Snap Dashを導入することで、お客様の満足度向上・SNS拡散・新たな収益源を同時に実現できます。初期費用ゼロ・完全成果報酬型で、リスクなくスタートできます。</p>
+  </div>
+  <div class="container">
+
+    <!-- 実績バナー -->
+    <div style="background: #111; border-radius: 16px; padding: 32px 40px; margin-bottom: 56px; display: flex; align-items: center; gap: 32px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 200px;">
+        <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;">導入実績（2026年6月時点）</div>
+        <div style="font-size: 15px; color: rgba(255,255,255,0.85); line-height: 1.7;">京都・着物レンタル店1店舗での導入から<br><strong style="color: #fff; font-size: 26px;">月間60件</strong>の撮影案件を獲得。</div>
+      </div>
+      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <div style="text-align: center;">
+          <div style="font-size: 32px; font-weight: 700; color: #fff;">60<span style="font-size: 16px;">件</span></div>
+          <div style="font-size: 11px; color: rgba(255,255,255,0.5);">月間撮影件数</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 32px; font-weight: 700; color: #fff;">30<span style="font-size: 16px;">%</span></div>
+          <div style="font-size: 11px; color: rgba(255,255,255,0.5);">店舗様収益率</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 32px; font-weight: 700; color: #fff;">¥0</div>
+          <div style="font-size: 11px; color: rgba(255,255,255,0.5);">初期費用</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 導入メリット -->
+    <div style="margin-bottom: 64px;">
+      <div class="sec-title">導入メリット</div>
+      <h2 style="font-size: 24px; font-weight: 700; margin: 10px 0 28px;">お客様の体験価値を高め、<br>売上・集客に直結します。</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+
+        <div style="background: #f7f7f7; border-radius: 12px; padding: 28px;">
+          <div style="font-size: 36px; margin-bottom: 14px;">💴</div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">撮影1件ごとに30%の収益</h3>
+          <p style="font-size: 13px; color: #666; line-height: 1.7;">撮影料金の<strong>30%が店舗様の収益</strong>になります。例えば月60件・平均29,800円のプランであれば、月間約<strong>53万円以上</strong>の収益になります。</p>
+        </div>
+
+        <div style="background: #f7f7f7; border-radius: 12px; padding: 28px;">
+          <div style="font-size: 36px; margin-bottom: 14px;">📱</div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">SNS素材として活用できる</h3>
+          <p style="font-size: 13px; color: #666; line-height: 1.7;">アプリ内でお客様のSNS承諾書チェックが完了するため、<strong>撮影写真をそのままSNS用素材として活用</strong>できます。店舗の宣伝コストを削減できます。</p>
+        </div>
+
+        <div style="background: #f7f7f7; border-radius: 12px; padding: 28px;">
+          <div style="font-size: 36px; margin-bottom: 14px;">🆕</div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">新たな収入源</h3>
+          <p style="font-size: 13px; color: #666; line-height: 1.7;">既存のサービスに撮影オプションを追加するだけ。<strong>在庫リスクゼロ・スタッフ負担ゼロ</strong>で、全く新しい収益の柱が生まれます。</p>
+        </div>
+
+        <div style="background: #f7f7f7; border-radius: 12px; padding: 28px;">
+          <div style="font-size: 36px; margin-bottom: 14px;">⚡</div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">当日撮影対応で機会損失ゼロ</h3>
+          <p style="font-size: 13px; color: #666; line-height: 1.7;">事前予約なしのお客様にも<strong>当日すぐに撮影対応</strong>が可能。「予約していなかった」というお客様の獲得にもつながります。</p>
+        </div>
+
+        <div style="background: #f7f7f7; border-radius: 12px; padding: 28px;">
+          <div style="font-size: 36px; margin-bottom: 14px;">🌏</div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">インバウンド対応</h3>
+          <p style="font-size: 13px; color: #666; line-height: 1.7;">英語対応のカメラマンが在籍しているため、外国人観光客へのサービス提供もスムーズに行えます。</p>
+        </div>
+
+        <div style="background: #111; border-radius: 12px; padding: 28px; color: #fff;">
+          <div style="font-size: 36px; margin-bottom: 14px;">⚙️</div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #fff;">手間ゼロで導入</h3>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.7;">カメラマンの手配・管理・請求はすべてSnap Dashが対応。<strong style="color:#fff;">スタッフの負担は一切ありません。</strong></p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 導入後サポート -->
+    <div style="margin-bottom: 64px;">
+      <div class="sec-title">導入後のサポート</div>
+      <p style="font-size: 14px; color: #666; margin-top: 8px; margin-bottom: 24px;">弊社のノウハウをもとに、導入店舗様専用の集客戦略・販促ツールをすべてご用意します。</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 22px; display: flex; gap: 14px; align-items: flex-start;">
+          <span style="font-size: 28px; flex-shrink: 0;">🪧</span>
+          <div><div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">看板設置</div><div style="font-size: 12px; color: #888; line-height: 1.6;">店舗入口への看板を弊社が制作・設置。通りがかりのお客様への訴求が可能です。</div></div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 22px; display: flex; gap: 14px; align-items: flex-start;">
+          <span style="font-size: 28px; flex-shrink: 0;">🖼️</span>
+          <div><div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">A1サイズ 料金表POP</div><div style="font-size: 12px; color: #888; line-height: 1.6;">店内に設置できるA1サイズの撮影料金表POPを弊社が制作します。</div></div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 22px; display: flex; gap: 14px; align-items: flex-start;">
+          <span style="font-size: 28px; flex-shrink: 0;">📮</span>
+          <div><div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">ハガキサイズ 写真アルバム</div><div style="font-size: 12px; color: #888; line-height: 1.6;">撮影イメージを伝えるハガキサイズのフォトアルバムを設置。お客様の購買意欲を高めます。</div></div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 22px; display: flex; gap: 14px; align-items: flex-start;">
+          <span style="font-size: 28px; flex-shrink: 0;">🖼</span>
+          <div><div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">店内フォト装飾</div><div style="font-size: 12px; color: #888; line-height: 1.6;">店内の空きスペースに撮影写真を飾り、実際の撮影イメージをお客様に視覚的に伝えます。</div></div>
+        </div>
+      </div>
+      <div style="background: #f5f5f5; border-radius: 10px; padding: 18px 22px; margin-top: 16px; font-size: 13px; color: #555; line-height: 1.8; border-left: 4px solid #111;">
+        ✅ 看板・POP・アルバム・写真掲載など、<strong>販促ツールはすべて弊社が制作・ご用意します。</strong><br>
+        ✅ 弊社のノウハウをもとに、導入店舗様専用の戦略で最適な訴求物をご提案します。
+      </div>
+    </div>
+
+    <!-- 対象店舗 -->
+    <div style="margin-bottom: 64px;">
+      <div class="sec-title">こんな店舗様におすすめ</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px;">
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; min-width: 200px;">
+          <span style="font-size: 28px;">👘</span>
+          <div><div style="font-size: 14px; font-weight: 600;">着物レンタル店</div><div style="font-size: 12px; color: #888; margin-top: 2px;">着付け後すぐに撮影オプション提案</div></div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; min-width: 200px;">
+          <span style="font-size: 28px;">🎭</span>
+          <div><div style="font-size: 14px; font-weight: 600;">体験店舗</div><div style="font-size: 12px; color: #888; margin-top: 2px;">茶道・伝統工芸など体験の瞬間をプロが記録</div></div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; min-width: 200px;">
+          <span style="font-size: 28px;">🧭</span>
+          <div><div style="font-size: 14px; font-weight: 600;">ツアーガイド</div><div style="font-size: 12px; color: #888; margin-top: 2px;">ガイドツアーに撮影をセットで提供</div></div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; min-width: 200px;">
+          <span style="font-size: 28px;">🏨</span>
+          <div><div style="font-size: 14px; font-weight: 600;">ホテル・旅館・民泊</div><div style="font-size: 12px; color: #888; margin-top: 2px;">宿泊プランに撮影オプションをセット</div></div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; min-width: 200px;">
+          <span style="font-size: 28px;">🏪</span>
+          <div><div style="font-size: 14px; font-weight: 600;">コンビニ</div><div style="font-size: 12px; color: #888; margin-top: 2px;">観光客が立ち寄る拠点として案内・紹介</div></div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; min-width: 200px;">
+          <span style="font-size: 28px;">🚕</span>
+          <div><div style="font-size: 14px; font-weight: 600;">タクシー会社</div><div style="font-size: 12px; color: #888; margin-top: 2px;">観光タクシーと撮影をセットで提供</div></div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; min-width: 200px;">
+          <span style="font-size: 28px;">🌏</span>
+          <div><div style="font-size: 14px; font-weight: 600;">その他インバウンド事業者様</div><div style="font-size: 12px; color: #888; margin-top: 2px;">外国人観光客向けサービスとの親和性◎</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 導入の流れ -->
+    <div style="margin-bottom: 64px;">
+      <div class="sec-title">導入の流れ</div>
+      <div class="flow-list" style="margin-top: 20px;">
+        <div class="flow-item"><div class="flow-num">1</div><div><h4>お問い合わせ・無料相談</h4><p>まずはお気軽にご相談ください。店舗の規模・ニーズに合わせた最適なプランをご提案します。（初回相談無料）</p></div></div>
+        <div class="flow-item"><div class="flow-num">2</div><div><h4>プラン確定・契約</h4><p>ご希望の撮影メニュー・手数料体系をご確認いただき、業務提携契約を締結します。</p></div></div>
+        <div class="flow-item"><div class="flow-num">3</div><div><h4>販促ツールの設置</h4><p>看板・料金表POP・フォトアルバムなど、弊社が制作した販促ツールを店舗に設置します。</p></div></div>
+        <div class="flow-item"><div class="flow-num">4</div><div><h4>サービス開始・収益化スタート</h4><p>準備完了後すぐにサービス開始。撮影が発生するたびに30%の収益が積み上がります。</p></div></div>
+      </div>
+    </div>
+
+    <!-- 収益シミュレーション -->
+    <div style="margin-bottom: 64px;">
+      <div class="sec-title">収益シミュレーション（店舗様の収益 = 撮影料金 × 30%）</div>
+      <p style="font-size: 14px; color: #666; margin-top: 8px; margin-bottom: 24px;">撮影料金の30%が店舗様の収益になります。初期費用・月額固定費は一切かかりません。</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px;">
+        <div style="border: 2px solid #111; border-radius: 12px; padding: 20px 16px; text-align: center; position: relative;">
+          <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; font-size: 10px; padding: 3px 12px; border-radius: 20px; white-space: nowrap;">人気No.1</div>
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">ライト</div>
+          <div style="font-size: 20px; font-weight: 700;">10<span style="font-size:12px; font-weight:400;">分</span></div>
+          <div style="font-size: 12px; color: #aaa; margin: 4px 0;">撮影料金 ¥11,000</div>
+          <div style="font-size: 11px; color: #bbb; margin-bottom: 10px;">20枚納品</div>
+          <div style="background: #111; border-radius: 8px; padding: 10px 8px;">
+            <div style="font-size: 11px; color: rgba(255,255,255,0.6);">店舗様収益</div>
+            <div style="font-size: 20px; font-weight: 700; color: #fff;">¥3,300</div>
+          </div>
+        </div>
+        <div style="border: 2px solid #111; border-radius: 12px; padding: 20px 16px; text-align: center; position: relative;">
+          <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; font-size: 10px; padding: 3px 12px; border-radius: 20px; white-space: nowrap;">人気No.1</div>
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">ベーシック</div>
+          <div style="font-size: 20px; font-weight: 700;">30<span style="font-size:12px; font-weight:400;">分</span></div>
+          <div style="font-size: 12px; color: #aaa; margin: 4px 0;">撮影料金 ¥16,000</div>
+          <div style="font-size: 11px; color: #bbb; margin-bottom: 10px;">30枚納品</div>
+          <div style="background: #111; border-radius: 8px; padding: 10px 8px;">
+            <div style="font-size: 11px; color: rgba(255,255,255,0.6);">店舗様収益</div>
+            <div style="font-size: 20px; font-weight: 700; color: #fff;">¥4,800</div>
+          </div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 20px 16px; text-align: center; position: relative;">
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">スタンダード</div>
+          <div style="font-size: 20px; font-weight: 700;">60<span style="font-size:12px; font-weight:400;">分</span></div>
+          <div style="font-size: 12px; color: #aaa; margin: 4px 0;">撮影料金 ¥29,800</div>
+          <div style="font-size: 11px; color: #bbb; margin-bottom: 10px;">50枚納品</div>
+          <div style="background: #f7f7f7; border-radius: 8px; padding: 10px 8px;">
+            <div style="font-size: 11px; color: #888;">店舗様収益</div>
+            <div style="font-size: 20px; font-weight: 700; color: #111;">¥8,940</div>
+          </div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">プレミアム</div>
+          <div style="font-size: 20px; font-weight: 700;">120<span style="font-size:12px; font-weight:400;">分</span></div>
+          <div style="font-size: 12px; color: #aaa; margin: 4px 0;">撮影料金 ¥55,000</div>
+          <div style="font-size: 11px; color: #bbb; margin-bottom: 10px;">100枚納品</div>
+          <div style="background: #f7f7f7; border-radius: 8px; padding: 10px 8px;">
+            <div style="font-size: 11px; color: #888;">店舗様収益</div>
+            <div style="font-size: 20px; font-weight: 700; color: #111;">¥16,500</div>
+          </div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">フル</div>
+          <div style="font-size: 20px; font-weight: 700;">180<span style="font-size:12px; font-weight:400;">分</span></div>
+          <div style="font-size: 12px; color: #aaa; margin: 4px 0;">撮影料金 ¥79,800</div>
+          <div style="font-size: 11px; color: #bbb; margin-bottom: 10px;">200枚納品</div>
+          <div style="background: #f7f7f7; border-radius: 8px; padding: 10px 8px;">
+            <div style="font-size: 11px; color: #888;">店舗様収益</div>
+            <div style="font-size: 20px; font-weight: 700; color: #111;">¥23,940</div>
+          </div>
+        </div>
+      </div>
+      <div style="background: #f0f7ff; border-radius: 10px; padding: 18px 22px; margin-top: 16px; font-size: 13px; color: #333; line-height: 1.8; border-left: 4px solid #3a7bd5;">
+        📊 <strong>実績例：</strong>着物レンタル店1店舗・月60件・スタンダードプラン中心の場合<br>
+        → 月間収益の目安：<strong>60件 × ¥8,940 = 約536,400円</strong>
+      </div>
+      <div style="background: #f5f5f5; border-radius: 8px; padding: 14px 18px; margin-top: 10px; font-size: 12px; color: #888; line-height: 1.7;">
+        ※ 収益はすべて税込撮影料金の30%です。※ 上記はシミュレーションであり、実際の収益を保証するものではありません。
+      </div>
+    </div>
+
+    <!-- 店舗向けFAQ -->
+    <div style="margin-bottom: 64px;">
+      <div class="sec-title">よくある質問（店舗様向け）</div>
+      <div style="margin-top: 20px;">
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">初期費用はかかりますか？<span class="faq-toggle">+</span></div><div class="faq-a">初期費用・月額固定費は一切かかりません。撮影が発生した場合のみ、撮影料金の30%を店舗様の収益としてお支払いする完全成果報酬型です。</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">販促ツールの費用は誰が負担しますか？<span class="faq-toggle">+</span></div><div class="faq-a">看板・A1サイズ料金表POP・ハガキサイズフォトアルバム・店内写真掲載など、すべての販促ツールは弊社が制作・ご用意します。店舗様のご負担はありません。</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">SNSに撮影写真を使用できますか？<span class="faq-toggle">+</span></div><div class="faq-a">はい。アプリ内でお客様のSNS承諾書チェックが完了するため、撮影写真をそのまま店舗のSNS用素材として活用いただけます。</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">当日予約なしのお客様にも対応できますか？<span class="faq-toggle">+</span></div><div class="faq-a">はい、当日撮影対応が可能です。事前予約をしていないお客様にも店頭でご案内いただくことで、新たな顧客獲得につながります。</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">スタッフの手間はかかりますか？<span class="faq-toggle">+</span></div><div class="faq-a">カメラマンの手配・スケジュール管理・写真納品まで、すべてSnap Dashが対応します。スタッフの方はお客様にSnap Dashをご案内いただくだけです。</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">外国人のお客様にも対応できますか？<span class="faq-toggle">+</span></div><div class="faq-a">はい、英語対応可能なカメラマンが在籍しています。インバウンドのお客様にも安心してサービスをご提供いただけます。</div></div>
+      </div>
+    </div>
+
+    <!-- お問い合わせCTA -->
+    <div style="background: #0f2027; border-radius: 16px; padding: 48px 40px; text-align: center; color: #fff;">
+      <h3 style="font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 12px;">まずは無料相談から</h3>
+      <p style="font-size: 15px; color: rgba(255,255,255,0.65); margin-bottom: 28px; line-height: 1.7;">導入に関するご質問・お見積もりはお気軽にどうぞ。<br>専任担当者が丁寧にご対応いたします。</p>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px;">
+        <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 20px 28px; text-align: left; min-width: 200px;">
+          <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 4px;">メールでのお問い合わせ</div>
+          <div style="font-size: 15px; font-weight: 600; color: #fff;">info@snapdash.jp</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 20px 28px; text-align: left; min-width: 200px;">
+          <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 4px;">受付時間</div>
+          <div style="font-size: 15px; font-weight: 600; color: #fff;">平日 10:00〜18:00</div>
+        </div>
+      </div>
+      <button onclick="alert('お問い合わせフォームへ移動します')" style="background: #fff; color: #111; border: none; padding: 14px 40px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer;">導入のお問い合わせはこちら</button>
+      <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 12px;">※ 初回相談は無料です。お気軽にご連絡ください。</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== RECRUIT ========== -->
+<div id="page-recruit" class="page">
+  <div class="page-hero" style="background: #1a1a2e;">
+    <h1>カメラマン募集</h1>
+    <p>Snap Dashと一緒に、京都で活躍しませんか？あなたの技術と感性を、お客様の大切な瞬間に活かしてください。</p>
+  </div>
+  <div class="container">
+
+    <!-- 魅力セクション -->
+    <div style="margin-bottom: 56px;">
+      <div class="sec-title">Snap Dashで働く魅力</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 24px;">
+        <div style="background: #f7f7f7; border-radius: 12px; padding: 24px;">
+          <div style="font-size: 32px; margin-bottom: 12px;">📅</div>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">自由なシフト</h3>
+          <p style="font-size: 13px; color: #666; line-height: 1.6;">自分のペースで働けます。副業・週末のみでもOKです。</p>
+        </div>
+        <div style="background: #f7f7f7; border-radius: 12px; padding: 24px;">
+          <div style="font-size: 32px; margin-bottom: 12px;">💴</div>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">安定した報酬</h3>
+          <p style="font-size: 13px; color: #666; line-height: 1.6;">撮影件数に応じた報酬体系。頑張った分だけしっかり稼げます。</p>
+        </div>
+        <div style="background: #f7f7f7; border-radius: 12px; padding: 24px;">
+          <div style="font-size: 32px; margin-bottom: 12px;">📸</div>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">多彩な撮影機会</h3>
+          <p style="font-size: 13px; color: #666; line-height: 1.6;">着物・婚礼・ナイト撮影など、様々なジャンルの撮影経験が積めます。</p>
+        </div>
+        <div style="background: #f7f7f7; border-radius: 12px; padding: 24px;">
+          <div style="font-size: 32px; margin-bottom: 12px;">🤝</div>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">充実サポート</h3>
+          <p style="font-size: 13px; color: #666; line-height: 1.6;">案件のマッチングから請求まで、Snap Dashがフルサポートします。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 対応撮影ジャンル -->
+    <div style="margin-bottom: 56px;">
+      <div class="sec-title">対応撮影ジャンル</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+        <span style="background: #111; color: #fff; font-size: 13px; padding: 6px 16px; border-radius: 20px;">👘 着物撮影</span>
+        <span style="background: #111; color: #fff; font-size: 13px; padding: 6px 16px; border-radius: 20px;">🍵 茶道撮影</span>
+        <span style="background: #111; color: #fff; font-size: 13px; padding: 6px 16px; border-radius: 20px;">🗺️ ツアー撮影</span>
+        <span style="background: #111; color: #fff; font-size: 13px; padding: 6px 16px; border-radius: 20px;">💒 婚礼撮影</span>
+        <span style="background: #111; color: #fff; font-size: 13px; padding: 6px 16px; border-radius: 20px;">💍 プロポーズ撮影</span>
+        <span style="background: #111; color: #fff; font-size: 13px; padding: 6px 16px; border-radius: 20px;">👨‍👩‍👧‍👦 家族撮影</span>
+        <span style="background: #111; color: #fff; font-size: 13px; padding: 6px 16px; border-radius: 20px;">🌙 ナイト撮影</span>
+        <span style="background: #111; color: #fff; font-size: 13px; padding: 6px 16px; border-radius: 20px;">🚶 ストリートスナップ</span>
+      </div>
+    </div>
+
+    <!-- 撮影報酬 -->
+    <div style="margin-bottom: 56px;">
+      <div class="sec-title">撮影報酬</div>
+      <p style="font-size: 14px; color: #666; margin-top: 8px; margin-bottom: 20px;">すべて税込・業務委託報酬です。納品完了後にお支払いいたします。</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px;">
+        <div style="border: 2px solid #111; border-radius: 12px; padding: 20px 16px; text-align: center; position: relative;">
+          <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; font-size: 10px; padding: 3px 12px; border-radius: 20px; white-space: nowrap;">人気No.1</div>
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">ライト</div>
+          <div style="font-size: 22px; font-weight: 700; margin-bottom: 4px;">10<span style="font-size:13px; font-weight:400;">分</span></div>
+          <div style="font-size: 11px; color: #888; margin-bottom: 10px;">20枚納品</div>
+          <div style="font-size: 20px; font-weight: 700; color: #111;">¥4,000</div>
+          <div style="font-size: 11px; color: #aaa;">税込</div>
+        </div>
+        <div style="border: 2px solid #111; border-radius: 12px; padding: 20px 16px; text-align: center; position: relative;">
+          <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; font-size: 10px; padding: 3px 12px; border-radius: 20px; white-space: nowrap;">人気No.1</div>
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">ベーシック</div>
+          <div style="font-size: 22px; font-weight: 700; margin-bottom: 4px;">30<span style="font-size:13px; font-weight:400;">分</span></div>
+          <div style="font-size: 11px; color: #888; margin-bottom: 10px;">30枚納品</div>
+          <div style="font-size: 20px; font-weight: 700; color: #111;">¥6,000</div>
+          <div style="font-size: 11px; color: #aaa;">税込</div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 20px 16px; text-align: center; position: relative;">
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">スタンダード</div>
+          <div style="font-size: 22px; font-weight: 700; margin-bottom: 4px;">60<span style="font-size:13px; font-weight:400;">分</span></div>
+          <div style="font-size: 11px; color: #888; margin-bottom: 10px;">50枚納品</div>
+          <div style="font-size: 20px; font-weight: 700; color: #111;">¥12,000</div>
+          <div style="font-size: 11px; color: #aaa;">税込</div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">プレミアム</div>
+          <div style="font-size: 22px; font-weight: 700; margin-bottom: 4px;">120<span style="font-size:13px; font-weight:400;">分</span></div>
+          <div style="font-size: 11px; color: #888; margin-bottom: 10px;">100枚納品</div>
+          <div style="font-size: 20px; font-weight: 700; color: #111;">¥24,000</div>
+          <div style="font-size: 11px; color: #aaa;">税込</div>
+        </div>
+        <div style="border: 1px solid #eee; border-radius: 12px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 12px; color: #999; margin-bottom: 6px;">フル</div>
+          <div style="font-size: 22px; font-weight: 700; margin-bottom: 4px;">180<span style="font-size:13px; font-weight:400;">分</span></div>
+          <div style="font-size: 11px; color: #888; margin-bottom: 10px;">150枚納品</div>
+          <div style="font-size: 20px; font-weight: 700; color: #111;">¥36,000</div>
+          <div style="font-size: 11px; color: #aaa;">税込</div>
+        </div>
+      </div>
+      <div style="background: #f5f5f5; border-radius: 8px; padding: 14px 18px; margin-top: 16px; font-size: 13px; color: #666; line-height: 1.7;">
+        ※ 報酬は納品完了後、月末締め翌月払いにてお支払いします。<br>
+        ※ 交通費込みの報酬です。<br>
+        ※ 詳細は面談時にご説明します。
+      </div>
+    </div>
+
+    <!-- 募集要項 -->
+    <div style="margin-bottom: 56px;">
+      <div class="sec-title">募集要項</div>
+      <table class="options-table" style="margin-top: 20px;">
+        <tbody>
+          <tr><td style="font-weight:600; width:160px; background:#f7f7f7;">雇用形態</td><td>業務委託（フリーランス）</td></tr>
+          <tr><td style="font-weight:600; background:#f7f7f7;">対応エリア</td><td>京都市内およびその周辺</td></tr>
+          <tr><td style="font-weight:600; background:#f7f7f7;">勤務時間</td><td>自由（依頼に応じて対応）</td></tr>
+          <tr><td style="font-weight:600; background:#f7f7f7;">報酬</td><td>撮影プランに応じた歩合制（詳細は面談にてご説明）</td></tr>
+          <tr><td style="font-weight:600; background:#f7f7f7;">応募条件</td><td>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; padding:4px 0;">
+              <li style="display:flex; gap:8px; align-items:flex-start;"><span style="color:#111; font-weight:700; flex-shrink:0;">✓</span>京都在住の方</li>
+              <li style="display:flex; gap:8px; align-items:flex-start;"><span style="color:#111; font-weight:700; flex-shrink:0;">✓</span>羽織を着用できる方（羽織は弊社でご準備します）</li>
+              <li style="display:flex; gap:8px; align-items:flex-start;"><span style="color:#111; font-weight:700; flex-shrink:0;">✓</span>撮影日から3日以内に納品できる方（ギガファイル便使用）</li>
+              <li style="display:flex; gap:8px; align-items:flex-start;"><span style="color:#111; font-weight:700; flex-shrink:0;">✓</span>英語でのコミュニケーションが可能な方</li>
+              <li style="display:flex; gap:8px; align-items:flex-start;"><span style="color:#111; font-weight:700; flex-shrink:0;">✓</span>着物撮影のご経験がある方</li>
+              <li style="display:flex; gap:8px; align-items:flex-start;"><span style="color:#111; font-weight:700; flex-shrink:0;">✓</span>カメラ2台以上をお持ちの方</li>
+              <li style="display:flex; gap:8px; align-items:flex-start;"><span style="color:#111; font-weight:700; flex-shrink:0;">✓</span>レスポンスが早い方</li>
+              <li style="display:flex; gap:8px; align-items:flex-start;"><span style="color:#111; font-weight:700; flex-shrink:0;">✓</span>おもてなし精神をお持ちの方</li>
+            </ul>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 応募の流れ -->
+    <div style="margin-bottom: 56px;">
+      <div class="sec-title">応募の流れ</div>
+      <div class="flow-list" style="margin-top: 20px;">
+        <div class="flow-item"><div class="flow-num">1</div><div><h4>エントリー</h4><p>下記フォームよりお名前・ポートフォリオURLをご記入のうえお送りください。</p></div></div>
+        <div class="flow-item"><div class="flow-num">2</div><div><h4>書類選考</h4><p>ポートフォリオを拝見し、1週間以内にご連絡いたします。</p></div></div>
+        <div class="flow-item"><div class="flow-num">3</div><div><h4>オンライン面談</h4><p>サービスの詳細・報酬体系などをご説明します（30分程度）。</p></div></div>
+        <div class="flow-item"><div class="flow-num">4</div><div><h4>契約・デビュー</h4><p>業務委託契約を締結し、案件のご紹介を開始します。</p></div></div>
+      </div>
+    </div>
+
+    <!-- 応募フォーム -->
+    <div style="background: #111; border-radius: 16px; padding: 40px; color: #fff;">
+      <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #fff;">エントリーフォーム</h3>
+      <p style="font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 28px; line-height: 1.7;">下記にご記入のうえ、送信してください。担当者より折り返しご連絡いたします。</p>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div>
+          <label style="font-size: 13px; color: rgba(255,255,255,0.7); display: block; margin-bottom: 6px;">お名前 <span style="color:#f66;">*</span></label>
+          <input type="text" placeholder="山田 太郎" style="width:100%; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff; font-size: 14px;">
+        </div>
+        <div>
+          <label style="font-size: 13px; color: rgba(255,255,255,0.7); display: block; margin-bottom: 6px;">メールアドレス <span style="color:#f66;">*</span></label>
+          <input type="email" placeholder="example@email.com" style="width:100%; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff; font-size: 14px;">
+        </div>
+        <div>
+          <label style="font-size: 13px; color: rgba(255,255,255,0.7); display: block; margin-bottom: 6px;">電話番号</label>
+          <input type="tel" placeholder="090-0000-0000" style="width:100%; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff; font-size: 14px;">
+        </div>
+        <div>
+          <label style="font-size: 13px; color: rgba(255,255,255,0.7); display: block; margin-bottom: 6px;">ポートフォリオURL（Instagram・サイトなど）</label>
+          <input type="url" placeholder="https://..." style="width:100%; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff; font-size: 14px;">
+        </div>
+        <div>
+          <label style="font-size: 13px; color: rgba(255,255,255,0.7); display: block; margin-bottom: 6px;">得意な撮影ジャンル・自己PR</label>
+          <textarea rows="4" placeholder="着物撮影・ポートレートが得意です。京都在住で週末を中心に稼働できます。" style="width:100%; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff; font-size: 14px; resize: vertical;"></textarea>
+        </div>
+        <button onclick="alert('送信ありがとうございます！担当者より1週間以内にご連絡いたします。')" style="background: #fff; color: #111; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px;">エントリーする</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== CONTACT ========== -->
+<div id="page-contact" class="page">
+  <div class="page-hero" style="background: #111;">
+    <h1>お問い合わせ</h1>
+    <p>導入のご相談・カメラマンへのご応募など、お気軽にご連絡ください。通常2営業日以内にご返信いたします。</p>
+  </div>
+  <div class="container">
+
+    <!-- タブ切り替え -->
+    <div style="display: flex; gap: 0; margin-bottom: 48px; border-bottom: 2px solid #eee;">
+      <button id="tab-partner" onclick="switchTab('partner')" style="padding: 14px 32px; font-size: 15px; font-weight: 700; background: #111; color: #fff; border: none; cursor: pointer; border-radius: 8px 8px 0 0;">🏪 導入店舗様のお問い合わせ</button>
+      <button id="tab-camera" onclick="switchTab('camera')" style="padding: 14px 32px; font-size: 15px; font-weight: 600; background: #f5f5f5; color: #888; border: none; cursor: pointer; border-radius: 8px 8px 0 0; margin-left: 4px;">📸 カメラマンエントリー</button>
+    </div>
+
+    <!-- 導入店舗フォーム -->
+    <div id="form-partner">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: flex-start;">
+        <div>
+          <div class="sec-title">導入店舗様のお問い合わせ</div>
+          <h2 style="font-size: 22px; font-weight: 700; margin: 10px 0 16px;">まずは無料相談から</h2>
+          <p style="font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 28px;">導入に関するご質問・お見積もりなど、どんな小さなことでもお気軽にご相談ください。専任担当者が丁寧にご対応いたします。</p>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="background: #f7f7f7; border-radius: 10px; padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start;">
+              <span style="font-size: 20px;">✅</span>
+              <div><div style="font-size: 13px; font-weight: 600; margin-bottom: 3px;">初期費用・月額固定費ゼロ</div><div style="font-size: 12px; color: #888;">完全成果報酬型。リスクなく導入できます。</div></div>
+            </div>
+            <div style="background: #f7f7f7; border-radius: 10px; padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start;">
+              <span style="font-size: 20px;">✅</span>
+              <div><div style="font-size: 13px; font-weight: 600; margin-bottom: 3px;">販促ツールはすべて弊社が用意</div><div style="font-size: 12px; color: #888;">看板・POP・フォトアルバムなど一切ご負担なし。</div></div>
+            </div>
+            <div style="background: #f7f7f7; border-radius: 10px; padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start;">
+              <span style="font-size: 20px;">✅</span>
+              <div><div style="font-size: 13px; font-weight: 600; margin-bottom: 3px;">撮影1件ごとに30%の収益</div><div style="font-size: 12px; color: #888;">新たな収入源として導入店様の売上に貢献。</div></div>
+            </div>
+          </div>
+          <div style="margin-top: 24px; padding: 16px 18px; background: #f0f7ff; border-radius: 10px; border-left: 4px solid #3a7bd5; font-size: 13px; color: #333; line-height: 1.7;">
+            📞 お電話でのご相談も受け付けています<br>
+            <strong style="font-size: 15px;">info@snapdash.jp</strong><br>
+            <span style="color: #888;">受付時間：平日 10:00〜18:00</span>
+          </div>
+        </div>
+
+        <div style="background: #fff; border: 1px solid #eee; border-radius: 16px; padding: 32px;">
+          <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 24px;">お問い合わせフォーム</h3>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">お名前 <span style="color:#e74c3c;">*</span></label>
+              <input type="text" placeholder="山田 太郎" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">会社名・店舗名 <span style="color:#e74c3c;">*</span></label>
+              <input type="text" placeholder="〇〇着物レンタル" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">メールアドレス <span style="color:#e74c3c;">*</span></label>
+              <input type="email" placeholder="example@email.com" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">電話番号</label>
+              <input type="tel" placeholder="075-000-0000" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">店舗の種類</label>
+              <select style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px; background:#fff;">
+                <option value="">選択してください</option>
+                <option>着物レンタル店</option>
+                <option>体験店舗</option>
+                <option>ホテル・旅館・民泊</option>
+                <option>ツアーガイド・観光ツアー会社</option>
+                <option>コンビニ</option>
+                <option>タクシー会社</option>
+                <option>その他インバウンド事業者</option>
+                <option>その他</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">お問い合わせ内容 <span style="color:#e74c3c;">*</span></label>
+              <textarea rows="4" placeholder="導入について詳しく聞きたい、まずは資料が欲しい、など何でもお気軽にどうぞ。" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px; resize:vertical;"></textarea>
+            </div>
+            <div style="display:flex; align-items:flex-start; gap:8px;">
+              <input type="checkbox" id="privacy1" style="margin-top:3px; flex-shrink:0;">
+              <label for="privacy1" style="font-size:12px; color:#666; line-height:1.6;">プライバシーポリシーに同意します <span style="color:#e74c3c;">*</span></label>
+            </div>
+            <button onclick="alert('お問い合わせを受け付けました！\n担当者より2営業日以内にご連絡いたします。')" style="background:#111; color:#fff; border:none; padding:14px; border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; width:100%;">送信する</button>
+            <p style="font-size:11px; color:#aaa; text-align:center;">※ 初回相談は無料です。お気軽にご連絡ください。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- カメラマンエントリーフォーム -->
+    <div id="form-camera" style="display:none;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: flex-start;">
+        <div>
+          <div class="sec-title">カメラマンエントリー</div>
+          <h2 style="font-size: 22px; font-weight: 700; margin: 10px 0 16px;">Snap Dashで活躍しませんか？</h2>
+          <p style="font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 28px;">京都を中心に活動するプロカメラマンを募集しています。自由なシフトで、あなたのペースで働けます。</p>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px;"><span style="width:8px; height:8px; background:#111; border-radius:50%; flex-shrink:0;"></span>京都在住の方</div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px;"><span style="width:8px; height:8px; background:#111; border-radius:50%; flex-shrink:0;"></span>着物撮影のご経験がある方</div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px;"><span style="width:8px; height:8px; background:#111; border-radius:50%; flex-shrink:0;"></span>カメラ2台以上をお持ちの方</div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px;"><span style="width:8px; height:8px; background:#111; border-radius:50%; flex-shrink:0;"></span>英語でのコミュニケーションが可能な方</div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px;"><span style="width:8px; height:8px; background:#111; border-radius:50%; flex-shrink:0;"></span>撮影日から3日以内に納品できる方</div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px;"><span style="width:8px; height:8px; background:#111; border-radius:50%; flex-shrink:0;"></span>おもてなし精神をお持ちの方</div>
+          </div>
+          <div style="background: #f7f7f7; border-radius: 10px; padding: 16px 18px; font-size: 13px; line-height: 1.7;">
+            <div style="font-weight: 700; margin-bottom: 6px;">📸 撮影報酬（交通費込み）</div>
+            <div style="color: #555;">10分 ¥4,000 / 30分 ¥6,000 / 60分 ¥12,000<br>120分 ¥24,000 / 180分 ¥36,000</div>
+          </div>
+        </div>
+
+        <div style="background: #fff; border: 1px solid #eee; border-radius: 16px; padding: 32px;">
+          <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 24px;">エントリーフォーム</h3>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">お名前 <span style="color:#e74c3c;">*</span></label>
+              <input type="text" placeholder="山田 太郎" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">メールアドレス <span style="color:#e74c3c;">*</span></label>
+              <input type="email" placeholder="example@email.com" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">電話番号</label>
+              <input type="tel" placeholder="090-0000-0000" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">ポートフォリオURL <span style="color:#e74c3c;">*</span></label>
+              <input type="url" placeholder="https://instagram.com/..." style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">得意な撮影ジャンル</label>
+              <select style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px; background:#fff;">
+                <option value="">選択してください</option>
+                <option>着物撮影</option>
+                <option>茶道撮影</option>
+                <option>婚礼・プロポーズ撮影</option>
+                <option>家族撮影</option>
+                <option>ナイト・早朝撮影</option>
+                <option>ストリートスナップ</option>
+                <option>その他</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">自己PR・稼働可能な曜日など</label>
+              <textarea rows="4" placeholder="着物撮影が得意です。週末を中心に稼働できます。英語も対応可能です。" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; font-size:14px; resize:vertical;"></textarea>
+            </div>
+            <div style="display:flex; align-items:flex-start; gap:8px;">
+              <input type="checkbox" id="privacy2" style="margin-top:3px; flex-shrink:0;">
+              <label for="privacy2" style="font-size:12px; color:#666; line-height:1.6;">プライバシーポリシーに同意します <span style="color:#e74c3c;">*</span></label>
+            </div>
+            <button onclick="alert('エントリーを受け付けました！\n書類選考の結果を1週間以内にご連絡いたします。')" style="background:#111; color:#fff; border:none; padding:14px; border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; width:100%;">エントリーする</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-logo">Snap Dash</div>
+    <div class="footer-links">
+      <a href="#">お問い合わせ</a>
+      <a href="#">プライバシーポリシー</a>
+      <a href="#">利用規約</a>
+      <a href="#">特定商取引法に基づく表記</a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2026 Snap Dash Inc.</div>
+</footer>
+
+<script>
+// ロゴアップロード
+let currentLogoIndex = 0;
+function triggerLogoUpload(index) {
+  currentLogoIndex = index;
+  document.getElementById('logo-file-input').click();
+}
+function handleLogoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = document.getElementById('logo-img-' + currentLogoIndex);
+    const label = document.getElementById('logo-label-' + currentLogoIndex);
+    img.src = e.target.result;
+    img.style.display = 'block';
+    label.style.display = 'none';
+    // ループ用に複製を更新
+    duplicateLogoTrack();
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+function duplicateLogoTrack() {
+  const track = document.getElementById('logo-track');
+  // 既存のコピーを削除
+  const copies = track.querySelectorAll('.logo-copy');
+  copies.forEach(c => c.remove());
+  // オリジナルのアイテムを複製
+  const originals = track.querySelectorAll('.logo-item:not(.logo-copy)');
+  originals.forEach(item => {
+    const clone = item.cloneNode(true);
+    clone.classList.add('logo-copy');
+    // クローン内の画像srcを同期
+    const origImgs = item.querySelectorAll('img');
+    const cloneImgs = clone.querySelectorAll('img');
+    origImgs.forEach((img, i) => { cloneImgs[i].src = img.src; cloneImgs[i].style.display = img.style.display; });
+    const origLabels = item.querySelectorAll('span');
+    const cloneLabels = clone.querySelectorAll('span');
+    origLabels.forEach((lbl, i) => { cloneLabels[i].style.display = lbl.style.display; });
+    // コピーはクリック無効
+    clone.querySelector('.logo-placeholder').onclick = null;
+    track.appendChild(clone);
+  });
+}
+// 初期化：ループ用コピーを生成
+window.addEventListener('load', function() { duplicateLogoTrack(); });
+
+function switchTab(tab) {
+  const isPartner = tab === 'partner';
+  document.getElementById('form-partner').style.display = isPartner ? 'block' : 'none';
+  document.getElementById('form-camera').style.display = isPartner ? 'none' : 'block';
+  document.getElementById('tab-partner').style.background = isPartner ? '#111' : '#f5f5f5';
+  document.getElementById('tab-partner').style.color = isPartner ? '#fff' : '#888';
+  document.getElementById('tab-camera').style.background = isPartner ? '#f5f5f5' : '#111';
+  document.getElementById('tab-camera').style.color = isPartner ? '#888' : '#fff';
+}
+
+function setLang(lang) {
+  document.querySelectorAll('[data-ja]').forEach(el => {
+    const text = el.getAttribute('data-' + lang);
+    if (!text) return;
+    if (el.tagName === 'H1' || el.tagName === 'H2') {
+      el.innerHTML = text;
+    } else {
+      el.textContent = text;
+    }
+  });
+  ['ja','en','zh'].forEach(l => {
+    const btn = document.getElementById('lang-' + l);
+    if (l === lang) {
+      btn.style.background = '#111'; btn.style.color = '#fff'; btn.style.borderColor = '#111';
+    } else {
+      btn.style.background = '#fff'; btn.style.color = '#555'; btn.style.borderColor = '#ccc';
+    }
+  });
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const links = { home:'トップ', news:'ニュース', area:'対応エリア', service:'サービス', price:'料金', faq:'よくある質問', partner:'導入店舗様へ', recruit:'カメラマン募集', contact:'お問い合わせ' };
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if (a.textContent === links[id]) a.classList.add('active');
+  });
+  window.scrollTo(0, 0);
+}
+function toggleFaq(el) {
+  el.parentElement.classList.toggle('open');
+}
+function previewImg(input, previewId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = document.getElementById(previewId);
+    img.src = e.target.result;
+    img.classList.add('loaded');
+    img.parentElement.querySelector('.step-img-placeholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+function previewPhone(input, previewId, placeholderId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = document.getElementById(previewId);
+    img.src = e.target.result;
+    img.style.display = 'block';
+    document.getElementById(placeholderId).style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+</script>
+</body>
+</html>
